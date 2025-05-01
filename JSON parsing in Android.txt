@@ -1,0 +1,209 @@
+in Menifest..
+
+ android:usesCleartextTraffic="true"
+
+
+
+<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+In build gradle..
+implementation libs.volley
+
+
+----------------------------------------------------------------------------------------------------
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:layout_marginTop="30dp"
+    android:layout_margin="20dp"
+    android:background="@color/white"
+    >
+
+   <Button
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/btn1"
+       android:text="Load Data"
+       />
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/prog1"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        >
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name:"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/txtload1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFEB3B"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="5dp"
+            />
+
+        <TextView
+            android:id="@+id/txt2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mobile:"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            />
+
+        <TextView
+            android:id="@+id/txtload2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFEB3B"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="5dp"
+            />
+
+        <TextView
+            android:id="@+id/txt3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email:"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            />
+
+        <TextView
+            android:id="@+id/txtload3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFEB3B"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="5dp"
+            />
+
+        <TextView
+            android:id="@+id/txt4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Address:"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            />
+
+        <TextView
+            android:id="@+id/txtload4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFEB3B"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="5dp"
+            />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+---------------------------------------------------------------------------------
+
+public class MainActivity extends AppCompatActivity {
+TextView name,mobile,email,address;
+Button loadtData;
+ProgressBar progressBar;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        loadtData=findViewById(R.id.btn1);
+        progressBar=findViewById(R.id.prog1);
+        name=findViewById(R.id.txtload1);
+        mobile=findViewById(R.id.txtload2);
+        email=findViewById(R.id.txtload3);
+        address=findViewById(R.id.txtload4);
+
+        loadtData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                progressBar.setVisibility(View.VISIBLE);
+
+
+
+                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                String url = "http://192.168.0.109:8080/Apps/practice.json";
+
+// Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                progressBar.setVisibility(View.GONE);
+
+                                Log.d("serverRes",response);
+
+                                try {
+                                    JSONObject jsonObject=new JSONObject(response);
+                                    String name1=jsonObject.getString("name");
+                                    String mobile1=jsonObject.getString("mobile");
+                                    String email1=jsonObject.getString("email");
+                                    String address1=jsonObject.getString("address");
+
+                                    name.setText(name1);
+                                    mobile.setText(mobile1);
+                                    email.setText(email1);
+                                    address.setText(address1);
+
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressBar.setVisibility(View.GONE);
+                        loadtData.setText("That didn't work!");
+                    }
+                });
+
+// Add the request to the RequestQueue.
+                queue.add(stringRequest);
+
+            }
+        });
+
+
+
+    }
+}
+

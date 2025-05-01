@@ -1,0 +1,60 @@
+ implementation 'com.android.volley:volley:1.2.1'
+------------------------------------------------------------------------
+<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+
+<application
+.
+.
+.
+android:usesCleartextTraffic="true"
+.
+.
+.
+</application>
+----------------------------------------------------------------------
+ <TextView
+        android:id="@+id/txt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:gravity="start"
+        android:textSize="30sp"
+         />
+---------------------------------------------------------------------------
+public class MainActivity extends AppCompatActivity {
+
+TextView textView;
+  
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+textView=findViewById(R.id.txt1;
+
+RequestQueue queue = Volley.newRequestQueue(this);
+String url = "https://www.google.com";
+
+// Request a string response from the provided URL.
+StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+    @Override
+    public void onResponse(String response) {
+        // Display the first 500 characters of the response string.
+        textView.setText("Response is: " + response.substring(0,500));
+    }
+}, new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        textView.setText("That didn't work!");
+    }
+});
+
+// Add the request to the RequestQueue.
+queue.add(stringRequest);
+
+}
+}

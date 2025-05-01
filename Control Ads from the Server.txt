@@ -1,0 +1,127 @@
+In Build Gradle...................
+
+implementation 'com.google.android.gms:play-services-ads:21.2.0'
+
+
+In Menifest...............
+ <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+--------------------------------------------------
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:layout_margin="15dp"
+    android:layout_marginTop="30dp"
+    >
+
+    <ProgressBar
+        android:id="@+id/progress1"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyle"
+        />
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+
+    </com.google.android.gms.ads.AdView>
+
+
+
+</LinearLayout>
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------
+
+
+
+
+public class MainActivity extends AppCompatActivity {
+    ProgressBar progressBar;
+
+    AdView add1;
+    public static boolean SHOW_AD=false;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        progressBar=findViewById(R.id.progress1);
+        add1=findViewById(R.id.adView);
+
+        MobileAds.initialize(this,
+                new OnInitializationCompleteListener() {
+
+                    @Override
+                    public void onInitializationComplete(InitializationStatus initializationStatus) {
+                    }
+                });
+
+
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://192.168.0.109:8080/Apps/data.php";
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+
+                        progressBar.setVisibility(View.GONE);
+
+
+                        if (response.contains("ShowAd")){
+
+                            SHOW_AD=true;
+                            add1.setVisibility(View.VISIBLE);
+                            AdRequest adRequest = new AdRequest.Builder().build();
+                            add1.loadAd(adRequest);
+                        }else{
+
+                            add1.setVisibility(View.GONE);
+
+                            SHOW_AD=false;
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(stringRequest);
+
+
+
+    }
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+

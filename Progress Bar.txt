@@ -1,0 +1,23 @@
+<ProgressBar
+        android:id="@+id/progress1"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyle"
+        />
+-----------------------------------------------------------
+
+public class MainActivity extends AppCompatActivity {
+    ProgressBar progressBar;
+   
+   
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        progressBar=findViewById(R.id.progress1);
+
+}
+}
